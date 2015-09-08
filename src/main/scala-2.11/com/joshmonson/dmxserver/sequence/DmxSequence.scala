@@ -6,8 +6,6 @@ package com.joshmonson.dmxserver.sequence
 case class DmxSequence(id: String, events: List[CueEvent], media: Option[DmxMedia]) {
   def getDuration = events.map(_.end.time).max
 
-  def toDeltaClock: DeltaClock[CueEvent] = {
-    val items = events.map(e => (e, e.start.time))
-    new DeltaClock[CueEvent](items)
-  }
+  def toDeltaClock = new DeltaClock(events.map(e => (e, e.start.time)))
+
 }

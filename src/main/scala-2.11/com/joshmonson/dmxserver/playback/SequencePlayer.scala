@@ -18,7 +18,7 @@ object SequencePlayer {
 
     var prevTime = 0.0
     timeDriver.play {
-      case UpdateEvent(time) => {
+      case UpdateEvent(time) =>
         // Update delta clock, possibly pulling off entries and moving them to the active stack
         val dt = time - prevTime
         prevTime = time
@@ -29,7 +29,6 @@ object SequencePlayer {
 
         // Activate everything on active stack
         active.foreach(AggregateActivator(time))
-      }
       case DoneEvent() => println("Done!!!")
     }
   }
