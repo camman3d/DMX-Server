@@ -1,0 +1,11 @@
+<div class="modal-header">
+  <h3 class="modal-title">Edit Values</h3>
+</div>
+<div class="modal-body">
+  <input type="number" min="0" max="100" class="form-control" ng-model="values[0]"/>
+  <input type="number" min="0" max="100" class="form-control" ng-model="values[1]"/>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="$close(values)">Save</button>
+  <button class="btn btn-warning" type="button" ng-click="$dismiss()">Cancel</button>
+</div>

@@ -1,0 +1,96 @@
+<div class="btn-group">
+  <label class="btn btn-success" ng-click="allSelect(true)" tooltip="Select All"><i class="fa fa-circle"></i></label>
+  <label class="btn btn-success" ng-click="allSelect(false)" tooltip="Select None"><i class="fa fa-circle-o"></i></label>
+  <label class="btn btn-success" ng-click="deleteSelected()" tooltip="Delete Selected"><i class="fa fa-trash"></i></label>
+  <label class="btn btn-success" ng-click="editValues()"><i class="fa fa-bar-chart"></i> Edit Values</label>
+  <label class="btn btn-success" ng-click="duplicateAfter()"><i class="fa fa-bar-chart"></i> Duplicate</label>
+  <label class="btn btn-success" ng-click="duplicateOnto()"><i class="fa fa-bar-chart"></i> Duplicate Onto</label>
+</div>
+<div class="btn-group">
+  <label class="btn btn-success" ng-model="mySeq.tool" btn-radio="'add'"><i class="fa fa-plus"></i> Add</label>
+  <label class="btn btn-success" ng-model="mySeq.tool" btn-radio="'select'"><i class="fa fa-mouse-pointer"></i> Select</label>
+  <label class="btn btn-success" ng-model="mySeq.tool" btn-radio="'move'"><i class="fa fa-arrows-h"></i> Move</label>
+</div>
+<button class="btn" ng-click="zoom(1)"><i class="fa fa-search-plus"></i></button>
+<button class="btn" ng-click="zoom(-1)"><i class="fa fa-search-minus"></i></button>
+<button class="btn" ng-click="save()"><i class="fa fa-save"></i> Save</button>
+<button class="btn" ng-click="open()"><i class="fa fa-folder-open-o"></i> Open</button>
+
+<div class="sequence">
+  <div class="track" dmx-waveform dmx-sequence="mySeq"></div>
+  <div ng-repeat="track in tracks" class="track" dmx-track="track" dmx-sequence="mySeq"></div>
+  <div class="time-cursor" dmx-time-cursor dmx-sequence="mySeq"></div>
+</div>
+
+<tabset>
+
+  <!-- Tracks -->
+  <tab heading="Tracks">
+    <div ng-repeat="track in tracks" class="row">
+      <div class="col-md-1"><span class="pull-right">Track {{$index}}:</span></div>
+      <div class="col-md-1">
+        <select class="form-control" ng-model="recordingKeys[$index]">
+          <option value="">none</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="0">0</option>
+        </select>
+      </div>
+      <div class="col-md-1">
+        <input type="number" ng-model="recordingValuesStart[$index]" class="form-control" max="100" min="0">
+      </div>
+      <div class="col-md-1">
+        <input type="number" ng-model="recordingValuesEnd[$index]" class="form-control" max="100" min="0">
+      </div>
+      <div class="col-md-1">
+        <button class="btn btn-danger" ng-click="tracks.splice($index, 1)"><i class="fa fa-trash"></i></button>
+      </div>
+      <div class="col-md-1">
+        <img src="images/light-bulb-icon.png" class="dmx-sim-icon" />
+      </div>
+    </div>
+    <button class="btn" ng-click="resetRecord()">Reset</button>
+    <button class="btn" btn-checkbox ng-model="recording">Record</button>
+    <button class="btn" ng-click="tracks.push([])">Add Track</button>
+  </tab>
+
+  <!-- Audio -->
+  <tab heading="Audio">
+    <button class="btn" ng-click="selectAudio()">Select Audio</button>
+    <input type="file" id="audioFileInput" style="display: none" accept="audio/*" onchange="angular.element(this).scope().getAudio(this)" />
+    {{audioName}}
+    <span ng-hide="audioName">No media selected</span>
+    <br/>
+    <div>
+      <button class="btn" ng-click="rewind()">Rewind</button>
+      <button class="btn" ng-click="play()" ng-hide="mediaPlaying">Play</button>
+      <button class="btn" ng-click="pause()" ng-show="mediaPlaying">Pause</button>
+    </div>
+  </tab>
+
+  <!-- Help -->
+  <tab heading="Help">
+    <ul>
+      <li><code>space</code>: play/pause</li>
+      <li><code>a</code>: add</li>
+      <li><code>s</code>: select</li>
+      <li><code>d</code>: move</li>
+      <li><code>q</code>: select all</li>
+      <li><code>w</code>: select none</li>
+      <li><code>e</code>: delete selected</li>
+      <li><code>r</code>: edit values</li>
+      <li><code>+</code>: zoom in</li>
+      <li><code>-</code>: zoom out</li>
+    </ul>
+  </tab>
+</tabset>
+
+
+
