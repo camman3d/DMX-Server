@@ -9,7 +9,7 @@ import com.joshmonson.dmxserver.sequence.{CueEvent, DmxSequence}
 object SequencePlayer {
 
   def getTimeDriver(seq: DmxSequence): TimeDriver =
-    seq.media.map(_.getTimeDriver).getOrElse(new SimpleTimeDriver(seq.getDuration))
+    seq.media.map(_.getTimeDriver).getOrElse(new SimpleTimeDriver(seq.duration))
 
   def play(seq: DmxSequence): Unit = {
     val timeDriver = getTimeDriver(seq)

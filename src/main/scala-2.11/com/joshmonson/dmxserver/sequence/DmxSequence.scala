@@ -1,10 +1,11 @@
 package com.joshmonson.dmxserver.sequence
 
+import spray.json.JsValue
+
 /**
  * Created by josh on 9/7/15.
  */
-case class DmxSequence(id: String, events: List[CueEvent], media: Option[DmxMedia]) {
-  def getDuration = events.map(_.end.time).max
+case class DmxSequence(name: String, duration: Double, events: List[CueEvent], media: Option[DmxMedia]) {
 
   def toDeltaClock = new DeltaClock(events.map(e => (e, e.start.time)))
 

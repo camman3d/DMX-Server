@@ -2,10 +2,14 @@
 'use strict';
 
 angular.module('dmxTimelineApp')
-  .controller('EditorCtrl', function ($scope, $rootScope, $window, $interval, $modal, $http, selectionHelper, duplicationHelper, mediaFactory, openHelper) {
+  .controller('EditorCtrl', function ($scope, $rootScope, $window, $interval, $modal, $http, selectionHelper, duplicationHelper, mediaFactory, openHelper, seedData) {
 
-    $scope.mySeq = {};
-    $scope.tracks = []; //seedData.trackLists[0];
+    $scope.mySeq = {
+      duration: 30,
+      zoom: 1,
+      tool: 'add'
+    };
+    $scope.tracks = [];
 
     $scope.save = function () {
       var payload = {

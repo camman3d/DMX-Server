@@ -8,7 +8,7 @@ object Tester {
 
   def main(args: Array[String]) {
 
-    val sequence = DmxSequence("123", List(
+    val sequence = DmxSequence("123", 20, List(
       CueEvent(0, CueValue(0, 50), CueValue(5, 75)),
       CueEvent(1, CueValue(2, 50), CueValue(4, 75)),
       CueEvent(2, CueValue(3.5, 20), CueValue(6, 40)),
