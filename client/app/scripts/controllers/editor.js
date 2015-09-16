@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('dmxTimelineApp')
-  .controller('EditorCtrl', function ($scope, $rootScope, $window, $interval, $modal, $http, selectionHelper, duplicationHelper, mediaFactory, openHelper, seedData) {
+  .controller('EditorCtrl', function ($scope, $rootScope, $window, $interval, $modal, $http, selectionHelper, duplicationHelper, mediaFactory, openHelper, trackTimeConverter) {
 
     $scope.mySeq = {
       duration: 30,
@@ -12,20 +12,33 @@ angular.module('dmxTimelineApp')
     $scope.tracks = [];
 
     $scope.save = function () {
+      if (!$scope.mySeq.name.trim()) {
+        alert('Sequence needs a name.');
+        return;
+      }
       var payload = {
         sequence: $scope.mySeq,
-        tracks: $scope.tracks
+        tracks: trackTimeConverter.fromPercent($scope.tracks, $scope.mySeq.duration)
       };
-      // TODO: make http call to save
-      console.log(payload);
+      $http.post("http://localhost:9001/api/sequences", payload)
+        .success(function () {
+          alert("Saved");
+        });
     };
 
     $scope.open = function () {
       openHelper.open().then(function (data) {
+        console.log(data);
         $scope.mySeq = data.sequence;
-        $scope.tracks = data.tracks;
+        $scope.mySeq.zoom = 1;
+        $scope.mySeq.tool = 'add';
+        $scope.tracks = trackTimeConverter.toPercent(data.tracks, $scope.mySeq.duration);
         // TODO: Load media
       });
+    };
+
+    $scope.durationUpdate = function () {
+      $rootScope.$broadcast("seq-update");
     };
 
     $scope.zoom = function (factor) {

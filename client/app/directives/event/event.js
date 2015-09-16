@@ -14,8 +14,8 @@ angular.module('dmxTimelineApp')
 
         function update() {
           // Set the position
-          var left = (scope.event.start.time / scope.sequence.duration) * 100;
-          var width = ((scope.event.end.time - scope.event.start.time) / scope.sequence.duration) * 100;
+          var left = scope.event.start.time;
+          var width = scope.event.end.time - left;
           element.css("left", left + "%").css("width", width + "%");
 
           // Set selected

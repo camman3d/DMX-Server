@@ -41,6 +41,7 @@ class MyService extends Actor with ActorLogging {
       val headers = List(
         `Access-Control-Allow-Origin`(AllOrigins),
         `Access-Control-Allow-Methods`(GET, POST, PUT, DELETE),
+        `Access-Control-Allow-Headers`("Content-Type"),
         `Access-Control-Max-Age`(600)
       )
       sender ! HttpResponse(StatusCodes.OK, headers = headers)
@@ -68,6 +69,8 @@ class MyService extends Actor with ActorLogging {
       val file = new File("./files/" + name + ".dmx.json")
       file.delete()
       sender ! jsonResponse(JsObject("deleted" -> JsBoolean(true)))
+
+    case _ => sender ! HttpResponse(StatusCodes.NotFound)
 
   }
 }
