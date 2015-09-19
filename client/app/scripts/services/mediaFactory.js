@@ -39,9 +39,7 @@ angular.module('dmxTimelineApp')
       basic: function () {
         return new BasicMediaManager();
       },
-      audio: function (file) {
-        // TODO: Differentiate file and URL
-        var url = URL.createObjectURL(file);
+      audio: function (url) {
         var audio = new Audio();
         audio.src = url;
         return audio;

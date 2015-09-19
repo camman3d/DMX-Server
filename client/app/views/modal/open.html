@@ -1,8 +1,8 @@
 <div class="modal-header">
-  <h3 class="modal-title">Open Sequence</h3>
+  <h3 class="modal-title">Open</h3>
 </div>
 <div class="modal-body">
-  <select ng-model="selection" ng-options="show for show in shows"></select>
+  <select ng-model="selection" ng-options="item for item in items"></select>
 </div>
 <div class="modal-footer">
   <button class="btn btn-primary" type="button" ng-click="$close(selection)">Open</button>

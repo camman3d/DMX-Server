@@ -5,7 +5,7 @@ import spray.json.JsValue
 /**
  * Created by josh on 9/7/15.
  */
-case class DmxSequence(name: String, duration: Double, events: List[CueEvent], media: Option[DmxMedia]) {
+case class DmxSequence(name: String, duration: Double, events: List[CueEvent], media: Option[String]) {
 
   def toDeltaClock = new DeltaClock(events.map(e => (e, e.start.time)))
 

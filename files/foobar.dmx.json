@@ -1,0 +1,17 @@
+{
+  "sequence": {
+    "name": "foobar",
+    "duration": 30.0,
+    "media": "foobar"
+  },
+  "tracks": [[{
+    "start": {
+      "time": 9.2,
+      "value": 100.0
+    },
+    "end": {
+      "time": 23.2,
+      "value": 100.0
+    }
+  }]]
+}

@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('dmxTimelineApp')
-  .controller('EditorCtrl', function ($scope, $rootScope, $window, $interval, $modal, $http, selectionHelper, duplicationHelper, mediaFactory, openHelper, trackTimeConverter) {
+  .controller('EditorCtrl', function ($scope, $rootScope, $window, $interval, $modal, $http, selectionHelper, duplicationHelper, mediaFactory, openHelper, trackTimeConverter, $timeout) {
 
     $scope.mySeq = {
       duration: 30,
@@ -20,6 +20,7 @@ angular.module('dmxTimelineApp')
         sequence: $scope.mySeq,
         tracks: trackTimeConverter.fromPercent($scope.tracks, $scope.mySeq.duration)
       };
+      console.log(payload);
       $http.post("http://localhost:9001/api/sequences", payload)
         .success(function () {
           alert("Saved");
@@ -27,14 +28,19 @@ angular.module('dmxTimelineApp')
     };
 
     $scope.open = function () {
-      openHelper.open().then(function (data) {
-        console.log(data);
-        $scope.mySeq = data.sequence;
-        $scope.mySeq.zoom = 1;
-        $scope.mySeq.tool = 'add';
-        $scope.tracks = trackTimeConverter.toPercent(data.tracks, $scope.mySeq.duration);
-        // TODO: Load media
-      });
+      openHelper.open('http://localhost:9001/api/sequences')
+        .then(function (name) {
+          return $http.get('http://localhost:9001/api/sequences/' + name);
+        }).then(function (response) {
+          $scope.mySeq = response.data.sequence;
+          $scope.mySeq.zoom = 1;
+          $scope.mySeq.tool = 'add';
+          $scope.tracks = trackTimeConverter.toPercent(response.data.tracks, $scope.mySeq.duration);
+          if ($scope.mySeq.media) {
+            loadMedia($scope.mySeq.media);
+          }
+          $rootScope.$broadcast('seq-update');
+        });
     };
 
     $scope.durationUpdate = function () {
@@ -42,7 +48,11 @@ angular.module('dmxTimelineApp')
     };
 
     $scope.zoom = function (factor) {
-      $scope.mySeq.zoom *= 1 + (0.25 * factor);
+      if (factor === 0) {
+        $scope.mySeq.zoom = 1;
+      } else {
+        $scope.mySeq.zoom *= 1 + (0.25 * factor);
+      }
       $rootScope.$broadcast("seq-update");
     };
 
@@ -136,13 +146,13 @@ angular.module('dmxTimelineApp')
     var keyboardRecord = {};
     $(window).on('keydown', function (event) {
       var code = event.keyCode - 48; // '0' has a key code of 48
-      if (code >=0 && code <= 9 && !keyboardRecord[code] && $scope.mediaPlaying) {
+      if (code >= 0 && code <= 9 && !keyboardRecord[code] && $scope.mediaPlaying) {
         keyboardRecord[code] = media.currentTime;
       }
     });
     $(window).on('keyup', function (event) {
       var code = event.keyCode - 48; // '0' has a key code of 48
-      if (code >=0 && code <= 9 && keyboardRecord[code] && $scope.mediaPlaying) {
+      if (code >= 0 && code <= 9 && keyboardRecord[code] && $scope.mediaPlaying) {
         $scope.$apply(function () {
           $scope.recordingKeys.forEach(function (key, trackIndex) {
             if (key == code) {
@@ -187,15 +197,23 @@ angular.module('dmxTimelineApp')
     // Media
     var media = mediaFactory.basic();
     $scope.mediaPlaying = false;
-    $scope.selectAudio = function () {
-      $("#audioFileInput").click();
-    };
-    $scope.getAudio = function (f) {
-      var file = f.files[0];
-      // TODO: Make call to server and upload the file and get url back
-      media = mediaFactory.audio(file);
-      $scope.$apply(function () {
-        $scope.audioName = file.name;
+
+    function loadMedia(file) {
+      var url = "http://localhost:9001/api/media/" + file;
+      media = mediaFactory.audio(url);
+      $scope.audioName = file;
+    }
+
+    $scope.getAudio = function () {
+      openHelper.open('http://localhost:9001/api/media').then(function (file) {
+        $scope.mySeq.media = file;
+        loadMedia(file);
+        $rootScope.$broadcast('seq-update');
+
+        $timeout(function () {
+          $scope.mySeq.mediaDuration = media.duration;
+          $rootScope.$broadcast('seq-update');
+        }, 100);
       });
     };
 
@@ -227,6 +245,8 @@ angular.module('dmxTimelineApp')
 
     // Keyboard shortcuts
     $(window).on('keypress', function (event) {
+      // TODO: Don't do anything if were focused on a input box or button
+
       $scope.$apply(function () {
         var code = event.keyCode;
         if (code === 32) { // Space
@@ -250,8 +270,6 @@ angular.module('dmxTimelineApp')
         } else if (code === 95) { // -
           $scope.zoom(-1);
         }
-
-        console.log(code);
       });
     });
 

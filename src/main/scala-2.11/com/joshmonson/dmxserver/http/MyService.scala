@@ -4,8 +4,10 @@ import java.io.File
 
 import akka.actor._
 import com.joshmonson.dmxserver.sequence.DmxSequence
-import org.apache.commons.io.FileUtils
+import com.joshmonson.dmxserver.waveform.WaveformGenerator
+import org.apache.commons.io.{IOUtils, FileUtils}
 import spray.can.Http
+import spray.can.Http.RegisterChunkHandler
 import spray.http.HttpMethods._
 import spray.http.HttpHeaders._
 import spray.http.MediaTypes._
@@ -27,14 +29,6 @@ class MyService extends Actor with ActorLogging {
   override def receive: Receive = {
     // when a new connection comes in we register ourselves as the connection handler
     case _: Http.Connected => sender ! Http.Register(self)
-
-    //    case HttpRequest(GET, Uri.Path(path), _, _, _) =>
-    //      val file = new File("./client" + (if (path.startsWith("/bower_components")) path else "/app" + path))
-    //      if (file.exists() && !file.isDirectory) {
-    //        sender ! HttpResponse(entity = HttpEntity(file.getType, FileUtils.readFileToByteArray(file)))
-    //      } else {
-    //        sender ! HttpResponse(StatusCode.int2StatusCode(404))
-    //      }
 
     case HttpRequest(OPTIONS, _, h, _, _) =>
       println(h)
@@ -69,6 +63,24 @@ class MyService extends Actor with ActorLogging {
       val file = new File("./files/" + name + ".dmx.json")
       file.delete()
       sender ! jsonResponse(JsObject("deleted" -> JsBoolean(true)))
+
+    case HttpRequest(GET, Uri.Path("/api/media"), _, _, _) =>
+      val files = new File("./media").listFiles().toVector.map(f => JsString(f.getName))
+      sender ! jsonResponse(JsArray(files))
+
+    case HttpRequest(GET, Uri.Path(path), _, _, _) if path startsWith "/api/media/" =>
+      val file = new File(path.replace("/api", "."))
+      val bytes = FileUtils.readFileToByteArray(file)
+      sender ! HttpResponse(entity = HttpEntity(`audio/mpeg`, bytes), headers = List(`Access-Control-Allow-Origin`(AllOrigins)))
+
+    case HttpRequest(GET, Uri.Path(path), _, _, _) if path startsWith "/api/waveforms/" =>
+      val file = new File(path.replace("/api", "."))
+      if (!file.exists()) {
+        println("Generating waveform...")
+        WaveformGenerator.generate(new File(path.replace("/api", ".").replace("waveforms", "media").replace("png", "mp3")))
+      }
+      val bytes = FileUtils.readFileToByteArray(file)
+      sender ! HttpResponse(entity = HttpEntity(`image/png`, bytes), headers = List(`Access-Control-Allow-Origin`(AllOrigins)))
 
     case _ => sender ! HttpResponse(StatusCodes.NotFound)
 

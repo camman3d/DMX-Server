@@ -16,6 +16,10 @@ object DmxJsonProtocol extends DefaultJsonProtocol {
       def getDouble(key: String) = getNumber(key).toDouble
       def getInt(key: String) = getNumber(key).toInt
 
+      def getOpt[T](key: String): Option[T] = json.fields.get(key).map(_.asInstanceOf[T])
+      def getOptString(key: String) = getOpt[JsString](key).map(_.value)
+      def getOptObj(key: String) = getOpt[JsObject](key)
+
       def getObj(key: String) = json.fields(key).asJsObject
       def getArr(key: String): Vector[JsValue] = json.fields(key)
     }
@@ -30,6 +34,7 @@ object DmxJsonProtocol extends DefaultJsonProtocol {
       val sequence = json.asJsObject.getObj("sequence")
       val name = sequence.getString("name")
       val duration = sequence.getDouble("duration")
+      val media = sequence.getOptString("media")
 
       val events = json.asJsObject.getArr("tracks")
         .zipWithIndex
@@ -38,7 +43,7 @@ object DmxJsonProtocol extends DefaultJsonProtocol {
         .sortBy(_.start.time)
         .toList
 
-      DmxSequence(name, duration, events, None)
+      DmxSequence(name, duration, events, media)
     }
 
     private def cueToJson(obj: CueEvent) =
@@ -48,7 +53,11 @@ object DmxJsonProtocol extends DefaultJsonProtocol {
       )
 
     override def write(obj: DmxSequence): JsValue = {
-      val sequence = JsObject("name" -> JsString(obj.name), "duration" -> JsNumber(obj.duration))
+      val sequence = JsObject(
+        "name" -> JsString(obj.name),
+        "duration" -> JsNumber(obj.duration),
+        "media" -> obj.media.map(JsString.apply).getOrElse(JsNull)
+      )
       val tracks = obj.events
         .groupBy(_.channel).toVector
         .sortBy(_._1).map(cues => JsArray(cues._2.map(cueToJson).toVector))

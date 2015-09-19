@@ -10,10 +10,19 @@ angular.module('dmxTimelineApp')
       },
       link: function (scope, element, attrs) {
 
+        var $waveform = element.children(".waveform");
+
         // Sizing
         function update() {
-          var width = locationUtils.trackWidth(scope.sequence);
+          var width = locationUtils.trackWidth({
+            duration: scope.sequence.mediaDuration || scope.sequence.duration,
+            zoom: scope.sequence.zoom
+          });
           element.css("width", width + "px");
+          if (scope.sequence.media) {
+            var waveformUrl = "http://localhost:9001/api/waveforms/" + scope.sequence.media.replace('.mp3', '.png');
+            $waveform.css('background-image', 'url("' + waveformUrl + '")');
+          }
         }
         update();
         $rootScope.$on('seq-update', update);

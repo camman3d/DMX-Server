@@ -5,11 +5,11 @@ angular.module('dmxTimelineApp')
   .factory('openHelper', function ($modal, $rootScope, $http, seedData) {
 
     return {
-      open: function () {
-        return $http.get('http://localhost:9001/api/sequences')
+      open: function (url) {
+        return $http.get(url)
           .then(function (response) {
             var scope = $rootScope.$new();
-            scope.shows = response.data;
+            scope.items = response.data;
 
             var modal = $modal.open({
               templateUrl: 'views/modal/open.html',
@@ -18,10 +18,6 @@ angular.module('dmxTimelineApp')
             });
 
             return modal.result;
-          }).then(function (name) {
-            return $http.get('http://localhost:9001/api/sequences/' + name);
-          }).then(function (response) {
-            return response.data;
           });
       }
     };

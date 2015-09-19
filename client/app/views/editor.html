@@ -12,6 +12,7 @@
   <label class="btn btn-success" ng-model="mySeq.tool" btn-radio="'move'"><i class="fa fa-arrows-h"></i> Move</label>
 </div>
 <button class="btn" ng-click="zoom(1)"><i class="fa fa-search-plus"></i></button>
+<button class="btn" ng-click="zoom(0)"><i class="fa fa-search"></i></button>
 <button class="btn" ng-click="zoom(-1)"><i class="fa fa-search-minus"></i></button>
 <button class="btn" ng-click="save()"><i class="fa fa-save"></i> Save</button>
 <button class="btn" ng-click="open()"><i class="fa fa-folder-open-o"></i> Open</button>
@@ -21,10 +22,6 @@
   <div ng-repeat="track in tracks" class="track" dmx-track="track" dmx-sequence="mySeq"></div>
   <div class="time-cursor" dmx-time-cursor dmx-sequence="mySeq"></div>
 </div>
-
-{{mySeq}}
-<hr/>
-{{tracks}}
 
 <tabset>
 
@@ -87,8 +84,7 @@
 
   <!-- Audio -->
   <tab heading="Audio">
-    <button class="btn" ng-click="selectAudio()">Select Audio</button>
-    <input type="file" id="audioFileInput" style="display: none" accept="audio/*" onchange="angular.element(this).scope().getAudio(this)" />
+    <button class="btn" ng-click="getAudio()">Select Audio</button>
     {{audioName}}
     <span ng-hide="audioName">No media selected</span>
     <br/>

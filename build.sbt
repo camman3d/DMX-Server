@@ -12,5 +12,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.3.13",
   "com.typesafe.akka" %% "akka-slf4j" % "2.3.13",
   "ch.qos.logback" % "logback-classic" % "1.1.3",
-  "commons-io" % "commons-io" % "2.4"
+  "commons-io" % "commons-io" % "2.4",
+  "com.googlecode.soundlibs" % "mp3spi" % "1.9.5-1"
 )
