@@ -1,4 +1,4 @@
-package com.joshmonson.dmxserver.waveform
+package com.joshmonson.dmxserver.audio
 
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -19,7 +19,8 @@ object WaveformGenerator {
 
     // Load the audio file
     val audioFile = AudioSystem.getAudioFileFormat(file)
-    val audio = AudioSystem.getAudioInputStream(file)
+    val audio = Mp3Decoder.getInput(file)
+//    val audio = AudioSystem.getAudioInputStream(file)
     val format = audio.getFormat
 
     // Get the bytes

@@ -7,10 +7,6 @@ class SimpleTimeDriver(duration: Double, interval: Double = 0.2) extends TimeDri
 
   var time = 0.0
 
-  override def init(): Unit = {
-    time = 0
-  }
-
   override def play(handler: (TimeEvent) => Unit): Unit = {
     val start = new Date().getTime.toDouble
     while (time < duration) {

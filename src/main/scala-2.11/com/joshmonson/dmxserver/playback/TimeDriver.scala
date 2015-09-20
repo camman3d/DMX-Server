@@ -5,8 +5,6 @@ package com.joshmonson.dmxserver.playback
  */
 trait TimeDriver {
 
-  def init(): Unit
-
   def play(handler: TimeEvent => Unit)
 
 }

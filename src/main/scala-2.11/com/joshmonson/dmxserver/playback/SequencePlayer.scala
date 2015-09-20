@@ -1,6 +1,9 @@
 package com.joshmonson.dmxserver.playback
 
+import java.io.File
+
 import com.joshmonson.dmxserver.activation.AggregateActivator
+import com.joshmonson.dmxserver.audio.AudioDriver
 import com.joshmonson.dmxserver.sequence.{CueEvent, DmxSequence}
 
 /**
@@ -9,8 +12,9 @@ import com.joshmonson.dmxserver.sequence.{CueEvent, DmxSequence}
 object SequencePlayer {
 
   def getTimeDriver(seq: DmxSequence): TimeDriver =
-    new SimpleTimeDriver(seq.duration)
-//    seq.media.map(_.getTimeDriver).getOrElse(new SimpleTimeDriver(seq.duration))
+    seq.media
+      .map(m => new AudioDriver(new File("./media/" + m), seq.duration))
+      .getOrElse(new SimpleTimeDriver(seq.duration))
 
   def play(seq: DmxSequence): Unit = {
     val timeDriver = getTimeDriver(seq)
@@ -25,11 +29,11 @@ object SequencePlayer {
         prevTime = time
         active ++= deltaClock.update(dt)
 
-        // See if anything on the active stack needs to be removed.
-        active = active.filter(_.end.time >= time)
-
         // Activate everything on active stack
         active.foreach(AggregateActivator(time))
+
+        // See if anything on the active stack needs to be removed.
+        active = active.filter(_.end.time >= time)
       case DoneEvent() => println("Done!!!")
     }
   }

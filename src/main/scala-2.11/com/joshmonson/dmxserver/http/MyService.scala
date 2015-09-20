@@ -3,8 +3,9 @@ package com.joshmonson.dmxserver.http
 import java.io.File
 
 import akka.actor._
+import com.joshmonson.dmxserver.playback.SequencePlayer
 import com.joshmonson.dmxserver.sequence.DmxSequence
-import com.joshmonson.dmxserver.waveform.WaveformGenerator
+import com.joshmonson.dmxserver.audio.WaveformGenerator
 import org.apache.commons.io.{IOUtils, FileUtils}
 import spray.can.Http
 import spray.can.Http.RegisterChunkHandler
@@ -81,6 +82,15 @@ class MyService extends Actor with ActorLogging {
       }
       val bytes = FileUtils.readFileToByteArray(file)
       sender ! HttpResponse(entity = HttpEntity(`image/png`, bytes), headers = List(`Access-Control-Allow-Origin`(AllOrigins)))
+
+    case HttpRequest(GET, Uri.Path(path), _, _, _) if path startsWith "/api/start/" =>
+      val name = path.replace("/api/start/", "")
+      val file = new File("./files/" + name + ".dmx.json")
+      val text = FileUtils.readFileToString(file)
+      val json = JsonParser(ParserInput(text))
+      val sequence = json.convertTo[DmxSequence]
+      SequencePlayer.play(sequence)
+      sender ! HttpResponse(StatusCodes.OK)
 
     case _ => sender ! HttpResponse(StatusCodes.NotFound)
 
