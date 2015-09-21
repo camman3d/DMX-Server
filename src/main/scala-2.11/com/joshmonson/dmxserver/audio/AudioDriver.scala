@@ -29,6 +29,7 @@ class AudioDriver(file: File, duration: Double) extends TimeDriver {
           Thread.sleep(sleepTime)
         }
         handler(DoneEvent())
+        clip.stop()
       }
     }).start()
 

@@ -133,6 +133,17 @@ angular.module('dmxTimelineApp')
       }
     };
 
+    function resize(side, amount) {
+      selectionHelper.getSelection().forEach(function (event) {
+        event[side].time += amount;
+      });
+      $rootScope.$broadcast("seq-update");
+    }
+
+    $scope.startDmx = function () {
+      $http.get('http://localhost:9001/api/start/' + $scope.mySeq.name);
+    };
+
     // Recording
     $scope.recordingKeys = [];
     $scope.recordingValuesStart = [];
@@ -177,12 +188,13 @@ angular.module('dmxTimelineApp')
     // Simulation
     function updateSim(time) {
       var simValues = [];
+      var pTime = (time / $scope.mySeq.duration) * 100;
       $scope.tracks.forEach(function (track, index) {
         var value = 0;
         for (var i = 0; i < track.length; i++) {
           var event = track[i];
-          if (event.start.time <= time && event.end.time >= time) {
-            var percent = (time - event.start.time) / (event.end.time - event.start.time);
+          if (event.start.time <= pTime && event.end.time >= pTime) {
+            var percent = (pTime - event.start.time) / (event.end.time - event.start.time);
             value = ((1 - percent) * event.start.value) + (percent * event.end.value);
             break;
           }
@@ -269,7 +281,16 @@ angular.module('dmxTimelineApp')
           $scope.zoom(1);
         } else if (code === 95) { // -
           $scope.zoom(-1);
+        } else if (code === 122) { // z
+          resize('start', -0.1);
+        } else if (code === 120) { // x
+          resize('start', 0.1);
+        } else if (code === 99) { // c
+          resize('end', -0.1);
+        } else if (code === 118) { // v
+          resize('end', 0.1);
         }
+        //console.log(code);
       });
     });
 

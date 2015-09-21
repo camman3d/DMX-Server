@@ -44,6 +44,7 @@
           <input type="number" ng-model="mySeq.duration" id="seqDuration" class="form-control" ng-change="durationUpdate()" />
         </div>
       </div>
+      <button class="btn" ng-click="startDmx()"><i class="fa fa-play"></i> Start DMX Playback</button>
     </div>
   </tab>
   <tab heading="Tracks">
@@ -108,6 +109,10 @@
       <li><code>r</code>: edit values</li>
       <li><code>+</code>: zoom in</li>
       <li><code>-</code>: zoom out</li>
+      <li><code>z</code>: resize start left</li>
+      <li><code>x</code>: resize start right</li>
+      <li><code>c</code>: resize end left</li>
+      <li><code>v</code>: resize end right</li>
     </ul>
   </tab>
 </tabset>

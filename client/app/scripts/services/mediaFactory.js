@@ -41,7 +41,20 @@ angular.module('dmxTimelineApp')
       },
       audio: function (url) {
         var audio = new Audio();
-        audio.src = url;
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            var objUrl = window.URL.createObjectURL(this.response);
+            console.log(objUrl);
+            audio.src = objUrl;
+          }
+        };
+        xhr.open('GET', url);
+        xhr.responseType = 'blob';
+        xhr.send();
+
+        //audio.src = url;
         return audio;
       }
     };
