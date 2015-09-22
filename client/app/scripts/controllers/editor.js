@@ -293,7 +293,6 @@ angular.module('dmxTimelineApp')
 
     // Keyboard shortcuts
     $(window).on('keypress', function (event) {
-      // TODO: Don't do anything if were focused on a input box or button
       var $focus = $(':focus');
       if ($focus.length) {
         var nodeName = $focus[0].nodeName;
