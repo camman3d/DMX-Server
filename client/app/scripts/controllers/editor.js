@@ -10,6 +10,7 @@ angular.module('dmxTimelineApp')
       tool: 'add'
     };
     $scope.tracks = [];
+    selectionHelper.cacheTracks($scope.tracks);
 
     $scope.save = function () {
       if (!$scope.mySeq.name.trim()) {
@@ -36,6 +37,7 @@ angular.module('dmxTimelineApp')
           $scope.mySeq.zoom = 1;
           $scope.mySeq.tool = 'add';
           $scope.tracks = trackTimeConverter.toPercent(response.data.tracks, $scope.mySeq.duration);
+          selectionHelper.cacheTracks($scope.tracks);
           if ($scope.mySeq.media) {
             loadMedia($scope.mySeq.media);
           }
@@ -84,6 +86,7 @@ angular.module('dmxTimelineApp')
             return !event.selected;
           });
         });
+        selectionHelper.cacheTracks($scope.tracks);
       }
     };
 
