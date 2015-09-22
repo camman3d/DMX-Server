@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('dmxTimelineApp')
-  .factory('duplicationHelper', function (selectionHelper) {
+  .factory('duplicationHelper', function (selectionHelper, undoHelper) {
 
     var selected = [];
 
@@ -57,8 +57,10 @@ angular.module('dmxTimelineApp')
         duplicates.forEach(function (duplicate) {
           duplicate.event.start.time += timeOffset;
           duplicate.event.end.time += timeOffset;
-          tracks[duplicate.trackIndex + trackOffset].push(duplicate.event);
+          duplicate.trackIndex += trackOffset;
+          tracks[duplicate.trackIndex].push(duplicate.event);
         });
+        undoHelper.saveDuplicate(duplicates);
       },
 
       selectDuplicates: function (duplicates) {

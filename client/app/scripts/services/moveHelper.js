@@ -36,7 +36,7 @@ angular.module('dmxTimelineApp')
       startMove: function (event) {
         moving = true;
         var time = locationUtils.percentOnTrackRaw(event.clientX, $('.track:first')[0]);
-        undoHelper.saveMove(selectionHelper.getSelection());
+        undoHelper.saveMoveResize(selectionHelper.getSelection());
         selectionHelper.getSelection().forEach(function (event) {
           event.startOffset = event.start.time - time;
           event.endOffset = event.end.time - time;

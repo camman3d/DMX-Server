@@ -89,13 +89,13 @@ angular.module('dmxTimelineApp')
           track.forEach(function (event) {
             if (event.selected) {
               selectionHelper.deselect(event);
-              event.trackIdx = trackIdx;
+              event.trackIndex = trackIdx;
               events.push(event);
             }
           });
         });
         events.forEach(function (event) {
-          var track = $scope.tracks[event.trackIdx];
+          var track = $scope.tracks[event.trackIndex];
           track.splice(track.indexOf(event), 1);
         });
 
@@ -112,6 +112,7 @@ angular.module('dmxTimelineApp')
         });
         modal.result.then(function (data) {
           if (data) {
+            undoHelper.saveEditValues(selectionHelper.getSelection());
             selectionHelper.getSelection().forEach(function (event) {
               event.start.value = data[0];
               event.end.value = data[1];
@@ -151,6 +152,7 @@ angular.module('dmxTimelineApp')
     };
 
     function resize(side, amount) {
+      undoHelper.saveMoveResize(selectionHelper.getSelection());
       selectionHelper.getSelection().forEach(function (event) {
         event[side].time += amount;
       });
@@ -159,6 +161,16 @@ angular.module('dmxTimelineApp')
 
     $scope.startDmx = function () {
       $http.get('http://localhost:9001/api/start/' + $scope.mySeq.name);
+    };
+
+    $scope.addTrack = function () {
+      $scope.tracks.push([]);
+      undoHelper.saveAddTrack();
+    };
+
+    $scope.deleteTrack = function (index) {
+      var track = $scope.tracks.splice(index, 1)[0];
+      undoHelper.saveDeleteTrack(track, index);
     };
 
     $scope.undo = function () {
@@ -190,7 +202,7 @@ angular.module('dmxTimelineApp')
           $scope.recordingKeys.forEach(function (key, trackIndex) {
             if (key == code) {
               console.log(key + " - " + trackIndex);
-              $scope.tracks[trackIndex].push({
+              var newEvent = {
                 start: {
                   time: (keyboardRecord[code] / $scope.mySeq.duration) * 100,
                   value: $scope.recordingValuesStart[trackIndex]
@@ -199,7 +211,9 @@ angular.module('dmxTimelineApp')
                   time: (media.currentTime / $scope.mySeq.duration) * 100,
                   value: $scope.recordingValuesEnd[trackIndex]
                 }
-              });
+              };
+              $scope.tracks[trackIndex].push(newEvent);
+              undoHelper.saveAdd($scope.tracks[trackIndex], newEvent);
             }
           });
         });

@@ -73,7 +73,7 @@
         <input type="number" ng-model="recordingValuesEnd[$index]" class="form-control" max="100" min="0">
       </div>
       <div class="col-md-1">
-        <button class="btn btn-danger" ng-click="tracks.splice($index, 1)"><i class="fa fa-trash"></i></button>
+        <button class="btn btn-danger" ng-click="deleteTrack($index)"><i class="fa fa-trash"></i></button>
       </div>
       <div class="col-md-1">
         <img src="images/light-bulb-icon.png" class="dmx-sim-icon" />
@@ -81,7 +81,7 @@
     </div>
     <button class="btn" ng-click="resetRecord()">Reset</button>
     <button class="btn" btn-checkbox ng-model="recording">Record</button>
-    <button class="btn" ng-click="tracks.push([])">Add Track</button>
+    <button class="btn" ng-click="addTrack()">Add Track</button>
   </tab>
 
   <!-- Audio -->
