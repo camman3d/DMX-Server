@@ -2,7 +2,8 @@
 'use strict';
 
 angular.module('dmxTimelineApp')
-  .controller('EditorCtrl', function ($scope, $rootScope, $window, $interval, $modal, $http, selectionHelper, duplicationHelper, mediaFactory, openHelper, trackTimeConverter, $timeout) {
+  .controller('EditorCtrl', function ($scope, $rootScope, $window, $interval, $modal, $http, selectionHelper,
+                                      duplicationHelper, mediaFactory, openHelper, trackTimeConverter, $timeout, undoHelper) {
 
     $scope.mySeq = {
       duration: 30,
@@ -33,6 +34,7 @@ angular.module('dmxTimelineApp')
         .then(function (name) {
           return $http.get('http://localhost:9001/api/sequences/' + name);
         }).then(function (response) {
+          undoHelper.reset();
           $scope.mySeq = response.data.sequence;
           $scope.mySeq.zoom = 1;
           $scope.mySeq.tool = 'add';
@@ -81,12 +83,24 @@ angular.module('dmxTimelineApp')
 
     $scope.deleteSelected = function () {
       if (confirm('Are you sure?')) {
-        $scope.tracks = $scope.tracks.map(function (track) {
-          return track.filter(function (event) {
-            return !event.selected;
+        var events = [];
+
+        $scope.tracks.forEach(function (track, trackIdx) {
+          track.forEach(function (event) {
+            if (event.selected) {
+              selectionHelper.deselect(event);
+              event.trackIdx = trackIdx;
+              events.push(event);
+            }
           });
         });
-        selectionHelper.cacheTracks($scope.tracks);
+        events.forEach(function (event) {
+          var track = $scope.tracks[event.trackIdx];
+          track.splice(track.indexOf(event), 1);
+        });
+
+        undoHelper.saveDelete(events);
+        //selectionHelper.cacheTracks($scope.tracks);
       }
     };
 
@@ -145,6 +159,11 @@ angular.module('dmxTimelineApp')
 
     $scope.startDmx = function () {
       $http.get('http://localhost:9001/api/start/' + $scope.mySeq.name);
+    };
+
+    $scope.undo = function () {
+      undoHelper.undo($scope.tracks);
+      $rootScope.$broadcast("seq-update");
     };
 
     // Recording

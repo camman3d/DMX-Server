@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('dmxTimelineApp')
-  .directive('dmxTrack', function ($rootScope, locationUtils, selectionHelper) {
+  .directive('dmxTrack', function ($rootScope, locationUtils, selectionHelper, undoHelper) {
     return {
       restrict: 'EA',
       templateUrl: 'directives/track/track.html',
@@ -34,23 +34,27 @@ angular.module('dmxTimelineApp')
             selectionHelper.multiSelectStart(trackIdx, percent);
           }
         });
-        $rootScope.$on('mouseup', function (e, event) {
-          scope.$apply(function () {
-            scope.adding = false;
-          });
+        element.on('mouseup', function (event) {
           if (scope.sequence.tool === 'select') {
             var trackIdx = element.index() - 1;
             var percent = locationUtils.percentOnTrackRaw(event.clientX, element);
             selectionHelper.multiSelectEnd(trackIdx, percent);
           }
         });
+        $rootScope.$on('mouseup', function (e, event) {
+          scope.$apply(function () {
+            scope.adding = false;
+          });
+        });
 
         scope.$on('create-event', function () {
           scope.$apply(function () {
-            scope.track.push({
+            var event = {
               start: {time: scope.createEvent.start, value: 100},
               end: {time: scope.createEvent.end, value: 100}
-            });
+            };
+            scope.track.push(event);
+            undoHelper.saveAdd(scope.track, event);
           });
         });
 

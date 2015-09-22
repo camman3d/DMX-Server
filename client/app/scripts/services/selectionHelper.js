@@ -20,8 +20,10 @@ angular.module('dmxTimelineApp')
         selected.push(obj);
       },
       deselect: function (obj) {
-        obj.selected = false;
-        selected.splice(selected.indexOf(obj), 1);
+        if (obj.selected) {
+          obj.selected = false;
+          selected.splice(selected.indexOf(obj), 1);
+        }
       },
       selectAll: function (arr) {
         [].push.apply(selected, arr);
