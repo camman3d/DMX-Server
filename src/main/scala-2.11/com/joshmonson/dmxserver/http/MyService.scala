@@ -83,6 +83,17 @@ class MyService extends Actor with ActorLogging {
       val bytes = FileUtils.readFileToByteArray(file)
       sender ! HttpResponse(entity = HttpEntity(`image/png`, bytes), headers = List(`Access-Control-Allow-Origin`(AllOrigins)))
 
+    case HttpRequest(GET, Uri.Path(path), _, _, _) if path startsWith "/api/startOffset/" =>
+      val parts = path.replace("/api/startOffset/", "").split("/")
+      val offset = parts(0).toInt
+      val name = parts(1)
+      val file = new File("./files/" + name + ".dmx.json")
+      val text = FileUtils.readFileToString(file)
+      val json = JsonParser(ParserInput(text))
+      val sequence = json.convertTo[DmxSequence]
+      SequencePlayer.play(sequence, offset)
+      sender ! HttpResponse(StatusCodes.OK)
+
     case HttpRequest(GET, Uri.Path(path), _, _, _) if path startsWith "/api/start/" =>
       val name = path.replace("/api/start/", "")
       val file = new File("./files/" + name + ".dmx.json")

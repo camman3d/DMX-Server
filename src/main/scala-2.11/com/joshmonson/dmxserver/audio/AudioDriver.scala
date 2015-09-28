@@ -7,7 +7,7 @@ import javax.sound.sampled._
 import com.joshmonson.dmxserver.playback.{DoneEvent, UpdateEvent, TimeDriver, TimeEvent}
 
 
-class AudioDriver(file: File, duration: Double) extends TimeDriver {
+class AudioDriver(file: File) extends TimeDriver {
 
   val sleepTime = 25
 
@@ -17,7 +17,11 @@ class AudioDriver(file: File, duration: Double) extends TimeDriver {
   val clip = AudioSystem.getLine(info).asInstanceOf[Clip]
   clip.open(audio)
 
+  var duration = 0.0
+
   override def play(handler: (TimeEvent) => Unit): Unit = {
+    clip.stop()
+    clip.setMicrosecondPosition(0)
     clip.start()
 
     new Thread(new Runnable {

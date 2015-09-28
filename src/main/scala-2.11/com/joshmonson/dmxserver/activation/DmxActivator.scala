@@ -21,10 +21,10 @@ object DmxActivator extends Activator {
   }
 
 
-  override def apply(time: Double): (CueEvent) => Unit =
+  override def apply(time: Double, offset: Int): (CueEvent) => Unit =
     cue => {
       if (dmxEnabled) {
-        OpenDmx.setValue(cue.channel, (cue.getValue(time) * 2.55).toInt)
+        OpenDmx.setValue(cue.channel + offset, (cue.getValue(time) * 2.55).toInt)
       }
     }
 }

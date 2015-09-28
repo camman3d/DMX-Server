@@ -27,7 +27,11 @@ object DmxJsonProtocol extends DefaultJsonProtocol {
     private def cueFromJson(channel: Int, json: JsValue) = {
       val start = json.asJsObject.getObj("start")
       val end = json.asJsObject.getObj("end")
-      CueEvent(channel, CueValue(start.getDouble("time"), start.getDouble("value")), CueValue(end.getDouble("time"), end.getDouble("value")))
+      try {
+        Some(CueEvent(channel, CueValue(start.getDouble("time"), start.getDouble("value")), CueValue(end.getDouble("time"), end.getDouble("value"))))
+      } catch {
+        case e: NoSuchElementException => None
+      }
     }
 
     override def read(json: JsValue): DmxSequence = {
@@ -40,6 +44,8 @@ object DmxJsonProtocol extends DefaultJsonProtocol {
         .zipWithIndex
         .flatMap(data => toJsonArray(data._1).map(j => (j, data._2)))
         .map(j => cueFromJson(j._2, j._1))
+        .filter(_.isDefined)
+        .map(_.get)
         .sortBy(_.start.time)
         .toList
 

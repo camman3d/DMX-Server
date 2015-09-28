@@ -3,7 +3,7 @@ package com.joshmonson.dmxserver.playback
 import java.io.File
 
 import com.joshmonson.dmxserver.activation.AggregateActivator
-import com.joshmonson.dmxserver.audio.AudioDriver
+import com.joshmonson.dmxserver.audio.{AudioPreloader, AudioDriver}
 import com.joshmonson.dmxserver.sequence.{CueEvent, DmxSequence}
 
 /**
@@ -13,10 +13,10 @@ object SequencePlayer {
 
   def getTimeDriver(seq: DmxSequence): TimeDriver =
     seq.media
-      .map(m => new AudioDriver(new File("./media/" + m), seq.duration))
+      .map(m => AudioPreloader.getAudioDriver(m, seq.duration))
       .getOrElse(new SimpleTimeDriver(seq.duration))
 
-  def play(seq: DmxSequence): Unit = {
+  def play(seq: DmxSequence, offset: Int = 0): Unit = {
     val timeDriver = getTimeDriver(seq)
     val deltaClock = seq.toDeltaClock
     var active: Vector[CueEvent] = Vector()
@@ -30,7 +30,7 @@ object SequencePlayer {
         active ++= deltaClock.update(dt)
 
         // Activate everything on active stack
-        active.foreach(AggregateActivator(time))
+        active.foreach(AggregateActivator(time, offset))
 
         // See if anything on the active stack needs to be removed.
         active = active.filter(_.end.time >= time)
