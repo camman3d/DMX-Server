@@ -1,0 +1,17 @@
+{
+  "sequence": {
+    "name": "houseon",
+    "duration": 2.0,
+    "persist": true
+  },
+  "tracks": [[{
+    "start": {
+      "time": 0.0,
+      "value": 0.0
+    },
+    "end": {
+      "time": 2.0,
+      "value": 100.0
+    }
+  }]]
+}

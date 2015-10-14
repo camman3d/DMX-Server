@@ -14,7 +14,7 @@ object Tester {
       CueEvent(2, CueValue(3.5, 20), CueValue(6, 40)),
       CueEvent(3, CueValue(3.5, 20), CueValue(5, 40)),
       CueEvent(4, CueValue(7.5, 20), CueValue(15, 0))
-    ), None)
+    ), None, persist = false)
 
 
 

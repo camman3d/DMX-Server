@@ -12,6 +12,6 @@ object AggregateActivator extends Activator {
     LogActivator
   )
 
-  override def apply(time: Double, offset: Int): (CueEvent) => Unit =
-    (cue) => activators.foreach(_(time, offset)(cue))
+  override def apply(time: Double, offset: Int, persist: Boolean): (CueEvent) => Unit =
+    (cue) => activators.foreach(_(time, offset, persist)(cue))
 }

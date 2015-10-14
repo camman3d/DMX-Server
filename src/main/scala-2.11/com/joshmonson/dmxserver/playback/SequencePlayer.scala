@@ -30,7 +30,7 @@ object SequencePlayer {
         active ++= deltaClock.update(dt)
 
         // Activate everything on active stack
-        active.foreach(AggregateActivator(time, offset))
+        active.foreach(AggregateActivator(time, offset, seq.persist))
 
         // See if anything on the active stack needs to be removed.
         active = active.filter(_.end.time >= time)
