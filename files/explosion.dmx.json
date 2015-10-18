@@ -1,14 +1,12 @@
 {
   "sequence": {
     "name": "explosion",
-    "duration": 2.0,
-    "media": "explosion.mp3"
+    "duration": 2.0
   },
   "tracks": [
-    [],[],[],[],[],[],[],[],
     [{
     "start": {
-      "time": 0.18722767556191314,
+      "time": 0,
       "value": 100.0
     },
     "end": {

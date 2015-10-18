@@ -1,0 +1,17 @@
+{
+  "sequence": {
+    "name": "bossexplosion",
+    "duration": 3.0,
+    "persist": false
+  },
+  "tracks": [[{
+    "start": {
+      "time": 0.0,
+      "value": 100.0
+    },
+    "end": {
+      "time": 2.5,
+      "value": 100.0
+    }
+  }]]
+}
