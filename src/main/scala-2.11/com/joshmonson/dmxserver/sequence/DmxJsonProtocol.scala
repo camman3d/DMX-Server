@@ -41,6 +41,7 @@ object DmxJsonProtocol extends DefaultJsonProtocol {
       val duration = sequence.getDouble("duration")
       val media = sequence.getOptString("media")
       val persist = sequence.getOptBoolean("persist").getOrElse(false)
+      val loop = sequence.getOptBoolean("loop").getOrElse(false)
 
       val events = json.asJsObject.getArr("tracks")
         .zipWithIndex
@@ -51,7 +52,7 @@ object DmxJsonProtocol extends DefaultJsonProtocol {
         .sortBy(_.start.time)
         .toList
 
-      DmxSequence(name, duration, events, media, persist)
+      DmxSequence(name, duration, events, media, persist, loop)
     }
 
     private def cueToJson(obj: CueEvent) =
@@ -65,7 +66,8 @@ object DmxJsonProtocol extends DefaultJsonProtocol {
         "name" -> JsString(obj.name),
         "duration" -> JsNumber(obj.duration),
         "media" -> obj.media.map(JsString.apply).getOrElse(JsNull),
-        "persist" -> JsBoolean(obj.persist)
+        "persist" -> JsBoolean(obj.persist),
+        "loop" -> JsBoolean(obj.loop)
       )
       val tracks = obj.events
         .groupBy(_.channel).toVector
