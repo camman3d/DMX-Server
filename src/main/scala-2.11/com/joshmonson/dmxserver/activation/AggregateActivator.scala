@@ -8,8 +8,8 @@ import com.joshmonson.dmxserver.sequence.CueEvent
 object AggregateActivator extends Activator {
 
   val activators = List(
-    DmxActivator,
-    LogActivator
+    DmxActivator
+//    LogActivator
   )
 
   override def apply(time: Double, offset: Int, persist: Boolean): (CueEvent) => Unit =

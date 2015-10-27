@@ -17,6 +17,7 @@ object SequencePlayer {
       .getOrElse(new SimpleTimeDriver(seq.duration))
 
   def play(seq: DmxSequence, offset: Int = 0): Unit = {
+    println(s"${seq.name} - Start")
     val timeDriver = getTimeDriver(seq)
     val deltaClock = seq.toDeltaClock
     var active: Vector[CueEvent] = Vector()
@@ -34,7 +35,7 @@ object SequencePlayer {
 
         // See if anything on the active stack needs to be removed.
         active = active.filter(_.end.time >= time)
-      case DoneEvent() => println("Done!!!")
+      case DoneEvent() => println(s"${seq.name} - Finish")
     }
   }
   
