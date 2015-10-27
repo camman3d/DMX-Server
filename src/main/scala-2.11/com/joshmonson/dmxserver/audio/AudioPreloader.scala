@@ -16,9 +16,10 @@ object AudioPreloader {
     })
     .toMap
 
-  def getAudioDriver(name: String, duration: Double) = {
+  def getAudioDriver(name: String, duration: Double, id: String) = {
     val driver = audioDrivers(name)
     driver.duration = duration
+    driver.id = id
     driver
   }
 }

@@ -11,14 +11,15 @@ import com.joshmonson.dmxserver.sequence.{CueEvent, DmxSequence}
  */
 object SequencePlayer {
 
-  def getTimeDriver(seq: DmxSequence): TimeDriver =
+  def getTimeDriver(seq: DmxSequence, id: String): TimeDriver =
     seq.media
-      .map(m => AudioPreloader.getAudioDriver(m, seq.duration))
-      .getOrElse(new SimpleTimeDriver(seq.duration))
+      .map(m => AudioPreloader.getAudioDriver(m, seq.duration, id))
+      .getOrElse(new SimpleTimeDriver(seq.duration, id = id))
 
   def play(seq: DmxSequence, offset: Int = 0): Unit = {
     println(s"${seq.name} - Start")
-    val timeDriver = getTimeDriver(seq)
+    val id = seq.name + offset
+    val timeDriver = getTimeDriver(seq, id)
     val deltaClock = seq.toDeltaClock
     var active: Vector[CueEvent] = Vector()
 
@@ -35,7 +36,13 @@ object SequencePlayer {
 
         // See if anything on the active stack needs to be removed.
         active = active.filter(_.end.time >= time)
-      case DoneEvent() => println(s"${seq.name} - Finish")
+      case DoneEvent() =>
+        if (seq.loop) {
+          println(s"${seq.name} - Looping")
+          play(seq, offset)
+        } else {
+          println(s"${seq.name} - Finish")
+        }
     }
   }
   
