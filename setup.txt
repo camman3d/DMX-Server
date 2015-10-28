@@ -1,0 +1,21 @@
+
+0-3: Fixture 1
+
+4-7: Fixture 2
+
+8-10: Player blinders
+11: Boss Explosion
+
+12: House
+13: Boss Light
+14: Enter light
+15: Exit light
+
+
+Welcome friends to Pumpkin Palooza.
+
+Play this game to earn your treat
+The pumpkin boss you should defeat
+
+But don't pound or twist the TNT
+Now let's begin on 1... 2... 3...
