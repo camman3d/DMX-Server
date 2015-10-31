@@ -29,7 +29,8 @@ class AudioDriver(file: File) extends TimeDriver {
     new Thread(new Runnable {
       override def run(): Unit = {
         var position = 0.0
-        while (runId == AudioDriver.playRecord.get(id) && position < duration) {
+        val clipDuration = clip.getMicrosecondLength.toDouble / 1000000.0
+        while (runId == AudioDriver.playRecord.get(id) && position < duration && position < clipDuration) {
           position = clip.getMicrosecondPosition.toDouble / 1000000.0 // Convert microseconds to seconds
           handler(UpdateEvent(position))
           Thread.sleep(sleepTime)

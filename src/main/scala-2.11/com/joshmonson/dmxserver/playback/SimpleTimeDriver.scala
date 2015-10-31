@@ -2,7 +2,7 @@ package com.joshmonson.dmxserver.playback
 
 import java.util.Date
 
-class SimpleTimeDriver(duration: Double, interval: Double = 0.1, id: String) extends TimeDriver {
+class SimpleTimeDriver(duration: Double, interval: Double = 0.05, id: String) extends TimeDriver {
 
   var time = 0.0
 
