@@ -1,45 +1,26 @@
 {
   "sequence": {
-    "duration": 4.0,
+    "duration": 2.0,
     "name": "houseon",
     "loop": false,
-    "persist": true,
-    "media": null
+    "persist": true
   },
   "tracks": [[{
     "start": {
       "time": 0.0,
-      "value": 100.0
-    },
-    "end": {
-      "time": 4.0,
       "value": 0.0
-    }
-  }, {
-    "start": {
-      "time": 2.5882352941176467,
-      "value": 100.0
     },
     "end": {
-      "time": 2.5882352941176467,
+      "time": 1.8,
       "value": 100.0
     }
   }], [{
     "start": {
       "time": 0.0,
-      "value": 100.0
-    },
-    "end": {
-      "time": 4.0,
       "value": 0.0
-    }
-  }, {
-    "start": {
-      "time": 2.5882352941176467,
-      "value": 100.0
     },
     "end": {
-      "time": 2.5882352941176467,
+      "time": 1.8,
       "value": 100.0
     }
   }]]

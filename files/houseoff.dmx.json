@@ -1,6 +1,6 @@
 {
   "sequence": {
-    "name": "houseon",
+    "name": "houseoff",
     "duration": 4.0,
     "persist": true
   },
@@ -10,7 +10,7 @@
       "value": 100.0
     },
     "end": {
-      "time": 4.0,
+      "time": 3.8,
       "value": 0.0
     }
   }],[{
@@ -19,7 +19,7 @@
       "value": 100.0
     },
     "end": {
-      "time": 4.0,
+      "time": 3.8,
       "value": 0.0
     }
   }]]
